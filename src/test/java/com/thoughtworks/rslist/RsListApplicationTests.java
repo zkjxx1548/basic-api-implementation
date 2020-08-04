@@ -132,6 +132,22 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(5)
+    void should_delete_event_given_index() throws Exception {
+        mockMvc.perform(delete("/rs/event?delete=4"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("该条名字修改了")))
+                .andExpect(jsonPath("$[0].keyWord", is("无")))
+                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("该条关键字改了")))
+                .andExpect(jsonPath("$[2].eventName", is("该条名字修改了")))
+                .andExpect(jsonPath("$[2].keyWord", is("该条关键字改了")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void contextLoads() {
     }
 
