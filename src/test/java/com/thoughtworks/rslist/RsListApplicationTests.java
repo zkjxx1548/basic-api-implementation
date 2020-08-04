@@ -27,13 +27,20 @@ class RsListApplicationTests {
     @Test
     void should_return_event_given_start_and_end() throws Exception {
         mockMvc.perform(get("/rs/list?start=1&end=2"))
-                .andExpect(content().string("第一条事件, 第二条事件"))
+                .andExpect(content().string("[第一条事件, 第二条事件]"))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list?start=2&end="))
-                .andExpect(content().string("第一条事件, 第二条事件, 第三条事件"))
+                .andExpect(content().string("[第二条事件, 第三条事件]"))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/list?start=&end=1"))
-                .andExpect(content().string("第一条事件, 第二条事件, 第三条事件"))
+        mockMvc.perform(get("/rs/list?end=1"))
+                .andExpect(content().string("[第一条事件]"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_add_event_given_new_event() throws Exception {
+        mockMvc.perform(get("/rs/list/1"))
+                .andExpect(content().string("第一条事件"))
                 .andExpect(status().isOk());
     }
 

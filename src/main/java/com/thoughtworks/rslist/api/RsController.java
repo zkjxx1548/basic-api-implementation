@@ -18,12 +18,17 @@ public class RsController {
   }
 
   @GetMapping("/rs/list")
-  public String getRsEventStringByStartToEnd(@RequestParam Integer start, @RequestParam Integer end) {
-    if (start != null && end != null) {
-      return rsList.subList(start - 1, end).toString();
+  public String getRsEventStringByStartToEnd(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+    if (start == null && end == null) {
+      return rsList.toString();
     }
-    return rsList.toString();
-
+    if (start == null) {
+      return rsList.subList(0, end).toString();
+    }
+    if (end == null) {
+      return rsList.subList(start - 1, rsList.size()).toString();
+    }
+    return rsList.subList(start - 1, end).toString();
   }
 }
 
