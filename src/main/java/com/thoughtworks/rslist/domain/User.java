@@ -1,23 +1,34 @@
 package com.thoughtworks.rslist.domain;
 
+import com.fasterxml.jackson.annotation.JacksonAnnotation;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.*;
 import java.util.Objects;
 
 public class User {
     @NotNull
     @Size(max = 8)
+    @JsonProperty(value = "user_name")
     private String userName;
     @NotNull
+    @JsonProperty(value = "user_gender")
     private String gender;
     @NotNull
     @Min(18)
     @Max(100)
+    @JsonProperty(value = "user_age")
     private int age;
     @Email
+    @JsonProperty(value = "user_email")
     private String email;
     @NotNull
     @Pattern(regexp = "1[\\d]{10}")
+    @JsonProperty(value = "user_phone")
     private String phone;
+    @JsonIgnore
     private int voteNum = 10;
 
     public User() {

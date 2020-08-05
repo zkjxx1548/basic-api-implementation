@@ -114,7 +114,6 @@ class RsControllerTest {
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第二条热搜", "政治", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
-                //.andExpect(jsonPath("$[4]."))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/user/list"))
                 .andExpect(jsonPath("$", hasSize(1)))

@@ -9,8 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,8 +23,20 @@ class UserControllerTest {
 
     @Test
     void should_return_users_when_get() throws Exception {
-        mockMvc.perform(get("/user/list"))
-                .andExpect(jsonPath("$", hasSize(0)))
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(new User("Jim", "male", 18, "1234678@tw.com", "12345678910"));
+
+        mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].user_name", is("Jim")))
+                .andExpect(jsonPath("$[0].user_gender", is("male")))
+                .andExpect(jsonPath("$[0].user_age", is(18)))
+                .andExpect(jsonPath("$[0].user_email", is("1234678@tw.com")))
+                .andExpect(jsonPath("$[0].user_phone", is("12345678910")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user_voteNum"))))
+                .andExpect(jsonPath("$[0]", not(hasKey("voteNum"))))
                 .andExpect(status().isOk());
     }
 
@@ -36,7 +47,7 @@ class UserControllerTest {
 
         mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/user/list"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(status().isOk());
     }
