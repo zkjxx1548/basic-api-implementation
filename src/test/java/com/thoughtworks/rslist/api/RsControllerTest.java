@@ -80,6 +80,9 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 //.andExpect(jsonPath("$[3].user", ))
                 .andExpect(status().isOk());
+        mockMvc.perform(get("/user/list"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -103,6 +106,9 @@ class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 //.andExpect(jsonPath("$[4]."))
                 .andExpect(status().isOk());
+        mockMvc.perform(get("/user/list"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(status().isOk());
 
 
     }
@@ -116,7 +122,9 @@ class RsControllerTest {
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
+        mockMvc.perform(get("/user/list"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(status().isOk());
 
     }
 
