@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import java.util.Objects;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -62,8 +65,9 @@ class RsControllerTest {
     @Test
     @Order(3)
     void should_add_event_given_new_event() throws Exception {
+        User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonStr = objectMapper.writeValueAsString(new RsEvent("猪肉涨价了", "经济"));
+        String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加一条热搜", "娱乐", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -75,8 +79,9 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("无")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord", is("经济")))
+                .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
+                .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
+                //.andExpect(jsonPath("$[3].user", ))
                 .andExpect(status().isOk());
     }
 
@@ -96,8 +101,8 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("无")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord", is("经济")))
+                .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
+                .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 .andExpect(status().isOk());
 
         jsonStr = objectMapper.writeValueAsString(new RsEvent(null, "该条关键字改了"));
@@ -111,8 +116,8 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("该条关键字改了")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord", is("经济")))
+                .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
+                .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 .andExpect(status().isOk());
 
         jsonStr = objectMapper.writeValueAsString(new RsEvent("该条名字修改了", "该条关键字改了"));
@@ -126,8 +131,8 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("该条关键字改了")))
                 .andExpect(jsonPath("$[2].eventName", is("该条名字修改了")))
                 .andExpect(jsonPath("$[2].keyWord", is("该条关键字改了")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord", is("经济")))
+                .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
+                .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 .andExpect(status().isOk());
     }
 
