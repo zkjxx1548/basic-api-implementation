@@ -128,12 +128,22 @@ class RsControllerTest {
     void should_not_add_event_given_null_user_or_null_keyword_or_null_event_name() throws Exception {
         User user = new User("xiaohong", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", null, user));
 
+        String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", null, user));
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
+        jsonStr = objectMapper.writeValueAsString(new RsEvent(null, "政治", user));
+        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
 
+        jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", "政治", null));
+        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", "政治", new User()));
+        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

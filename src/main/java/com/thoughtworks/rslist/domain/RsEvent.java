@@ -9,6 +9,7 @@ public class RsEvent {
     @NotNull
     private String keyWord;
     @Valid
+    @NotNull
     private User user;
 
     public RsEvent() {
