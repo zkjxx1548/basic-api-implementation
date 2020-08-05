@@ -86,6 +86,17 @@ class RsControllerTest {
     }
 
     @Test
+    @Order(3)
+    void should_not_add_event_given_invalid_event() throws Exception {
+        User user = new User("xiaowang", "female", 17, "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加一条热搜", "娱乐", user));
+
+        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @Order(4)
     void should_modify_event_given_new_event() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
