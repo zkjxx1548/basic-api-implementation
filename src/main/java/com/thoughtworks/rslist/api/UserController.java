@@ -6,17 +6,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
-    private User user;
-
-    void setUser(User user) {
-        this.user = user;
-    }
+    private List<User> users = new ArrayList<>();
 
     @PostMapping("/user")
     public void registerUser(@RequestBody @Valid User user) {
-        setUser(user);
+        users.add(user);
     }
 }
