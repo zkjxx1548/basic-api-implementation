@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class RsController {
@@ -57,7 +59,9 @@ public class RsController {
       userController.registerUser(rsEvent.getUser());
     }
     rsList.add(rsEvent);
-    return ResponseEntity.created(null).build();
+    Map<String, String> resultBdy = new HashMap<>();
+    resultBdy.put("index", String.valueOf(rsList.indexOf(rsEvent)));
+    return ResponseEntity.created(null).body(resultBdy);
   }
 
   @PatchMapping("/rs/event/{index}")

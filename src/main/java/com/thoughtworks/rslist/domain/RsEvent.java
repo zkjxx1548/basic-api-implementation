@@ -37,12 +37,12 @@ public class RsEvent {
         this.keyWord = keyWord;
     }
 
-   // @JsonIgnore
+    @JsonIgnore
     public User getUser() {
         return user;
     }
 
-    //@JsonProperty
+    @JsonProperty
     public void setUser(User user) {
         this.user = user;
     }

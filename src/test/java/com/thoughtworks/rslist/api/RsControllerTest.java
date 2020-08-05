@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -17,8 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -66,9 +66,11 @@ class RsControllerTest {
     void should_add_event_given_new_event() throws Exception {
         User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加一条热搜", "娱乐", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.index", is("3")))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(4)))
@@ -91,6 +93,7 @@ class RsControllerTest {
     void should_not_add_event_given_invalid_event() throws Exception {
         User user = new User("xiaowang", "female", 17, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加一条热搜", "娱乐", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
@@ -102,6 +105,7 @@ class RsControllerTest {
     void should_only_add_event_to_rs_events_given_same_user_name_event() throws Exception {
         User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第二条热搜", "政治", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
@@ -119,6 +123,7 @@ class RsControllerTest {
     void should_add_event_and_add_user_given_diff_user_name_event() throws Exception {
         User user = new User("xiaohong", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", "政治", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
@@ -157,6 +162,7 @@ class RsControllerTest {
     void should_modify_event_given_new_event() throws Exception {
         User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
 
 
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("该条名字修改了", null, user));
