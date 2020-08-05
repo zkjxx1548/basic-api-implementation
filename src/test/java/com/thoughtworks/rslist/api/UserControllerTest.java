@@ -35,7 +35,7 @@ class UserControllerTest {
         String jsonStr = objectMapper.writeValueAsString(new User("Tom", "male", 18, "1234678@tw.com", "12345678910"));
 
         mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/user/list"))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(status().isOk());

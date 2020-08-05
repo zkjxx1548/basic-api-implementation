@@ -2,9 +2,13 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.Error;
+import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.rsocket.RSocketRequesterAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +31,9 @@ public class RsController {
 
   @GetMapping("/rs/list/{index}")
   public ResponseEntity getRsEventStringByIndex(@PathVariable int index) {
+    if (index < 1) {
+      throw new RsEventNotValidException();
+    }
     return ResponseEntity.ok(rsList.get(index - 1));
   }
 
@@ -54,19 +61,23 @@ public class RsController {
   }
 
   @PatchMapping("/rs/event/{index}")
-  public void patchRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+  public ResponseEntity patchRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
     if (rsEvent.getEventName() != null) {
       rsList.get(index - 1).setEventName(rsEvent.getEventName());
     }
     if (rsEvent.getKeyWord() != null) {
       rsList.get(index - 1).setKeyWord(rsEvent.getKeyWord());
     }
+    return ResponseEntity.created(null).build();
   }
 
   @DeleteMapping("/rs/event")
-  public void deleteRsEvent(@RequestParam int delete) {
+  public ResponseEntity deleteRsEvent(@RequestParam int delete) {
     rsList.remove(delete - 1);
+    return ResponseEntity.created(null).build();
   }
+
+
 }
 
 

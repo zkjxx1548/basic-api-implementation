@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import net.bytebuddy.build.ToStringPlugin;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -160,7 +161,7 @@ class RsControllerTest {
 
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("该条名字修改了", null, user));
         mockMvc.perform(patch("/rs/event/1").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(6)))
                 .andExpect(jsonPath("$[0].eventName", is("该条名字修改了")))
@@ -175,7 +176,7 @@ class RsControllerTest {
 
         jsonStr = objectMapper.writeValueAsString(new RsEvent(null, "该条关键字改了", user));
         mockMvc.perform(patch("/rs/event/2").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(6)))
                 .andExpect(jsonPath("$[0].eventName", is("该条名字修改了")))
@@ -190,7 +191,7 @@ class RsControllerTest {
 
         jsonStr = objectMapper.writeValueAsString(new RsEvent("该条名字修改了", "该条关键字改了", user));
         mockMvc.perform(patch("/rs/event/3").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(6)))
                 .andExpect(jsonPath("$[0].eventName", is("该条名字修改了")))
@@ -208,7 +209,7 @@ class RsControllerTest {
     @Order(9)
     void should_delete_event_given_index() throws Exception {
         mockMvc.perform(delete("/rs/event?delete=4"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[0].eventName", is("该条名字修改了")))
@@ -218,5 +219,21 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[2].eventName", is("该条名字修改了")))
                 .andExpect(jsonPath("$[2].keyWord", is("该条关键字改了")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_throw_index_exception() throws Exception {
+        mockMvc.perform(get("/rs/list/0"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid index")));
+    }
+
+    @Test
+    public void should_throw_param_exception() throws Exception {
+        String jsonStr = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\": {\"userName\":\"xyxia1111111\",\"age\": 19,\"gender\": \"male\",\"email\": \"a@b.com\",\"phone\": \"18888888888\"}}";
+
+        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid param")));
     }
 }
