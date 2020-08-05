@@ -4,6 +4,7 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
+import com.thoughtworks.rslist.exception.StartOrEndNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.rsocket.RSocketRequesterAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -45,12 +46,23 @@ public class RsController {
       return ResponseEntity.ok(rsList);
     }
     if (start == null) {
-      return ResponseEntity.ok(rsList.subList(0, end));
+      if (end >= 0 && end < rsList.size()) {
+        return ResponseEntity.ok(rsList.subList(0, end));
+      } else {
+        throw new StartOrEndNotValidException();
+      }
     }
     if (end == null) {
-      return ResponseEntity.ok(rsList.subList(start - 1, rsList.size()));
+      if (start >= 0 && start < rsList.size()) {
+        return ResponseEntity.ok(rsList.subList(start - 1, rsList.size()));
+      } else {
+        throw new StartOrEndNotValidException();
+      }
     }
-    return ResponseEntity.ok(rsList.subList(start - 1, end));
+    if (start >= 0 && start < rsList.size() && end >= 0 && end < rsList.size() && start < end) {
+      return ResponseEntity.ok(rsList.subList(start - 1, end));
+    }
+    throw new StartOrEndNotValidException();
   }
 
   @PostMapping("/rs/event")
@@ -59,9 +71,9 @@ public class RsController {
       userController.registerUser(rsEvent.getUser());
     }
     rsList.add(rsEvent);
-    Map<String, String> resultBdy = new HashMap<>();
-    resultBdy.put("index", String.valueOf(rsList.indexOf(rsEvent)));
-    return ResponseEntity.created(null).body(resultBdy);
+    Map<String, String> resultBody = new HashMap<>();
+    resultBody.put("index", String.valueOf(rsList.indexOf(rsEvent)));
+    return ResponseEntity.created(null).body(resultBody);
   }
 
   @PatchMapping("/rs/event/{index}")
@@ -80,8 +92,6 @@ public class RsController {
     rsList.remove(delete - 1);
     return ResponseEntity.created(null).build();
   }
-
-
 }
 
 

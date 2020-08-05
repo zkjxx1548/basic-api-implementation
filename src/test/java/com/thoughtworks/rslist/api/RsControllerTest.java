@@ -64,6 +64,9 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[0].keyWord", is("无")))
                 .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list?end=5"))
+                .andExpect(jsonPath("$.error", is("invalid request param")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
