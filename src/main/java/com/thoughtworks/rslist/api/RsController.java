@@ -34,7 +34,7 @@ public class RsController {
 
   @GetMapping("/rs/list/{index}")
   public ResponseEntity getRsEventStringByIndex(@PathVariable int index) {
-    if (index < 1) {
+    if (index < 1 || index > rsList.size()) {
       throw new RsEventNotValidException();
     }
     return ResponseEntity.ok(rsList.get(index - 1));

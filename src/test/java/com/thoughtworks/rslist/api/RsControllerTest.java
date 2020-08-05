@@ -35,7 +35,13 @@ class RsControllerTest {
                 .andExpect(jsonPath("$.keyWord", is("无")))
                 .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/list/0"))
+                .andExpect(jsonPath("$.error", is("invalid index")))
+                .andExpect(status().isBadRequest());
+
     }
+
 
     @Test
     @Order(2)
