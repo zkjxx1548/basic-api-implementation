@@ -1,7 +1,10 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,37 +18,39 @@ public class RsController {
 
   List<RsEvent> initRsList() {
     ArrayList<RsEvent> rsEventList = new ArrayList<>();
-    rsEventList.add(new RsEvent("第一条事件", "无"));
-    rsEventList.add(new RsEvent("第二条事件", "无"));
-    rsEventList.add(new RsEvent("第三条事件", "无"));
+    User user = new User("Tom", "male", 18, "1234678@tw.com", "12345678910");
+    rsEventList.add(new RsEvent("第一条事件", "无", user));
+    rsEventList.add(new RsEvent("第二条事件", "无", user));
+    rsEventList.add(new RsEvent("第三条事件", "无", user));
     return rsEventList;
   }
 
   @GetMapping("/rs/list/{index}")
-  public RsEvent getRsEventStringByIndex(@PathVariable int index) {
-    return rsList.get(index - 1);
+  public ResponseEntity getRsEventStringByIndex(@PathVariable int index) {
+    return ResponseEntity.ok(rsList.get(index - 1));
   }
 
   @GetMapping("/rs/list")
-  public List<RsEvent> getRsEventStringByStartToEnd(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+  public ResponseEntity getRsEventStringByStartToEnd(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
     if (start == null && end == null) {
-      return rsList;
+      return ResponseEntity.ok(rsList);
     }
     if (start == null) {
-      return rsList.subList(0, end);
+      return ResponseEntity.ok(rsList.subList(0, end));
     }
     if (end == null) {
-      return rsList.subList(start - 1, rsList.size());
+      return ResponseEntity.ok(rsList.subList(start - 1, rsList.size()));
     }
-    return rsList.subList(start - 1, end);
+    return ResponseEntity.ok(rsList.subList(start - 1, end));
   }
 
   @PostMapping("/rs/event")
-  public void addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+  public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
     if (!userController.getUsers().contains(rsEvent.getUser())) {
       userController.registerUser(rsEvent.getUser());
     }
     rsList.add(rsEvent);
+    return ResponseEntity.created(null).build();
   }
 
   @PatchMapping("/rs/event/{index}")
