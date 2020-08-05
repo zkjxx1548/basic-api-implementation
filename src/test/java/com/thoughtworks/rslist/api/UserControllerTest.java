@@ -8,8 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @AutoConfigureMockMvc
@@ -19,11 +23,21 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     @Test
+    void should_return_users_when_get() throws Exception {
+        mockMvc.perform(get("/user/list"))
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void should_register_user() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonStr = objectMapper.writeValueAsString(new User("Tom", "male", 18, "1234678@tw.com", "12345678910"));
 
         mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/user/list"))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(status().isOk());
     }
 

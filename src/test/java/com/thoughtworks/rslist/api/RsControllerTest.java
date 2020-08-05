@@ -3,7 +3,6 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
