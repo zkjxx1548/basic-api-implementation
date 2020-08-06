@@ -110,7 +110,7 @@ class UserControllerTest {
     }
 
     @Test
-    void     should_delete_user_by_id() throws Exception {
+    void should_delete_user_by_id() throws Exception {
         String request = objectMapper.writeValueAsString(new User("Tom", "male", 18, "1234678@tw.com", "12345678910"));
         mockMvc.perform(post("/user").content(request).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
