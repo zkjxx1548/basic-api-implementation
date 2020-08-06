@@ -4,8 +4,6 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,13 +16,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
-   /* @GetMapping("/users")
-    public List<User> getUsers() {
-        return users;
-    }
-*/
+
     @PostMapping("/user")
-    public void registerUser(@RequestBody @Valid User user) {
+    public void register(@RequestBody @Valid User user) {
         UserDto userDto = new UserDto();
         userDto.setPhone(user.getPhone());
         userDto.setAge(user.getAge());
