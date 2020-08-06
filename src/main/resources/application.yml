@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rsSystem
+    username:
+    paassword:
+  jpa:
+    hibernate:
+      ddl-auto: create

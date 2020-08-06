@@ -71,7 +71,7 @@ class RsControllerTest {
     void should_add_event_given_new_event() throws Exception {
         User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
+        //objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加一条热搜", "娱乐", user));
 
         mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
@@ -88,7 +88,7 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
                 .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/user/list"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(status().isOk());
     }
