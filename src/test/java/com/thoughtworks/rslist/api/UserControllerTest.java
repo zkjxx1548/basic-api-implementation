@@ -48,7 +48,7 @@ class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/users"))
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(status().isOk());
     }
 
@@ -86,5 +86,14 @@ class UserControllerTest {
 
         mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void should_throw_user_exception() throws Exception {
+        String jsonStr = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\": {\"userName\":\"xyxia1111111\",\"age\": 19,\"gender\": \"male\",\"email\": \"a@b.com\",\"phone\": \"18888888888\"}}";
+
+        mockMvc.perform(post("/user").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 }

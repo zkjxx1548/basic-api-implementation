@@ -11,8 +11,8 @@ public class RsEvent {
     private String eventName;
     @NotNull
     private String keyWord;
-    @Valid
     @NotNull
+    @Valid
     private User user;
 
     public RsEvent(String eventName, String keyWord, User user) {

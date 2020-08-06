@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.componet;
 
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.exception.StartOrEndNotValidException;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.validation.Valid;
 
 @ControllerAdvice
 public class RsEventExceptionHandler {

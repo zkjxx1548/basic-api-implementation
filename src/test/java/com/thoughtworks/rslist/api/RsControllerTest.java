@@ -97,8 +97,8 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[3].eventName", is("添加一条热搜")))
                 .andExpect(jsonPath("$[3].keyWord", is("娱乐")))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/user/list"))
-                .andExpect(jsonPath("$", hasSize(1)))
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(status().isOk());
     }
 
@@ -138,10 +138,10 @@ class RsControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
         String jsonStr = objectMapper.writeValueAsString(new RsEvent("添加第三条热搜", "政治", user));
-
-        mockMvc.perform(post("/rs/event").content(jsonStr).contentType(MediaType.APPLICATION_JSON))
+        String jsonStr2 = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\": {\"userName\":\"xyxia1\",\"gender\": \"male\",\"age\": 19,\"email\": \"a@b.com\",\"phone\": \"18888888888\"}}";
+        mockMvc.perform(post("/rs/event").content(jsonStr2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/user/list"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(status().isOk());
 
