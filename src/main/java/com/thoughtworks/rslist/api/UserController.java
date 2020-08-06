@@ -1,7 +1,9 @@
 package com.thoughtworks.rslist.api;
 
-import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.dto.UserDto;
+import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -14,22 +16,32 @@ import java.util.List;
 public class UserController {
     private final static List<User> users = new ArrayList<>();
 
-
-
-    @GetMapping("/users")
+    @Autowired
+    UserRepository userRepository;
+   /* @GetMapping("/users")
     public List<User> getUsers() {
         return users;
     }
-
+*/
     @PostMapping("/user")
-    public ResponseEntity registerUser(@RequestBody @Valid User user) {
-        users.add(user);
-        return ResponseEntity.created(null).build();
+    public void registerUser(@RequestBody @Valid User user) {
+        UserDto userDto = new UserDto();
+        userDto.setPhone(user.getPhone());
+        userDto.setAge(user.getAge());
+        userDto.setEmail(user.getEmail());
+        userDto.setGender(user.getGender());
+        userDto.setVoteNum(user.getVoteNum());
+        userDto.setUserName(user.getUserName());
+        userRepository.save(userDto);
     }
 
-    @DeleteMapping("user/{id}")
-    @Transactional
-    public ResponseEntity deleteUser(@PathVariable int id) {
+    @GetMapping("/user/{id}")
+    public UserDto getUserById(@PathVariable int id) {
+       return userRepository.findById(id).orElse(null);
+    }
 
+    @DeleteMapping("/user/delete/{id}")
+    public void deleteUserById(@PathVariable int id) {
+        userRepository.deleteById(id);
     }
 }

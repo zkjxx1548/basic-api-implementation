@@ -55,9 +55,9 @@ public class RsController {
 
   @PostMapping("/rs/event")
   public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-    if (!userController.getUsers().contains(rsEvent.getUser())) {
+    /*if (!userController.getUsers().contains(rsEvent.getUser())) {
       userController.registerUser(rsEvent.getUser());
-    }
+    }*/
     rsList.add(rsEvent);
     Map<String, String> resultBdy = new HashMap<>();
     resultBdy.put("index", String.valueOf(rsList.indexOf(rsEvent)));
