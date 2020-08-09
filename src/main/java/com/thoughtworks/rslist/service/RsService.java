@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.dto.VoteDto;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class RsService {
     this.voteRepository = voteRepository;
   }
 
+  @Bean
   public void vote(Vote vote, int rsEventId) {
     Optional<RsEventDto> rsEventDto = rsEventRepository.findById(rsEventId);
     Optional<UserDto> userDto = userRepository.findById(vote.getUserId());
